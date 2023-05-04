@@ -8,12 +8,13 @@
 }
 
 .App-header {
+  padding: 20px 0;
   background-color: #546482;
 
   display: flex;
-  flex-direction: column;
+  /* gap: 36px; */
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   font-size: calc(10px + 2vmin);
   color: white;
 }

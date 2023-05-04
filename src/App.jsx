@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState } from "react";
 
 import { formatDate } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
@@ -7,11 +8,19 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { INITIAL_EVENTS, createEventId } from "./utils/event-utils";
-import { useState } from "react";
+// bootstrap plugins
+import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+
+// locale
+import deLocale from "@fullcalendar/core/locales/de";
+import nlLocale from "@fullcalendar/core/locales/nl";
+
+import { INITIAL_EVENTS, createEventId } from "./utils/eventUtils";
+import { LANGUAGES } from "./utils/languageOptions";
 
 function App() {
   const [currentEvents, setCurrentEvents] = useState([]);
+  const [language, setLanguage] = useState("en");
 
   const handleDateSelect = (selectInfo) => {
     let title = prompt("Please enter a new title for your event");
@@ -44,6 +53,11 @@ function App() {
     setCurrentEvents(events);
   };
 
+  // language select
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+
   const renderSidebarEvent = (event) => {
     return (
       <li key={event.id}>
@@ -62,25 +76,45 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Calendar App</p>
+        <div className="select-container">
+          <select
+            name="languageSelect"
+            value={language}
+            onChange={handleLanguageChange}
+          >
+            {LANGUAGES.map(({ label, value }) => (
+              <option key={label} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <b>Termin</b>
       </header>
 
       <main className="demo-app">
         <div className="demo-app-sidebar">
           <div className="demo-app-sidebar-section">
-            <h2>All Events {currentEvents.length}</h2>
+            <h2>All events: {currentEvents.length}</h2>
             <ul>{currentEvents.map(renderSidebarEvent)}</ul>
           </div>
         </div>
         <div className="demo-app-main">
           <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            plugins={[
+              dayGridPlugin,
+              timeGridPlugin,
+              interactionPlugin,
+              bootstrap5Plugin,
+            ]}
             headerToolbar={{
               left: "prev,next today",
               center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay",
+              right: "dayGridMonth, timeGridWeek, timeGridDay, listMonth",
             }}
             initialView="timeGridWeek"
+            slotDuration="00:15"
             editable={true}
             selectable={true}
             dayMaxEvents={true}
@@ -93,6 +127,9 @@ function App() {
             eventChange={function(){}}
             eventRemove={function(){}}
             */
+            locales={[deLocale, nlLocale]}
+            locale={language}
+            themeSystem="bootstrap5"
           />
         </div>
       </main>
